@@ -40,7 +40,7 @@ export default {
                 const messageContent = welcomeConfig.welcomePing ? user.toString() : null;
 
                 const embedTitle = formatWelcomeMessage(
-                    welcomeConfig.welcomeEmbed?.title || '🎉 Welcome!',
+                    welcomeConfig.welcomeEmbed?.title || `👋 Welcome to ${guild.name}!`,
                     formatData
                 );
                 const embedFooter = welcomeConfig.welcomeEmbed?.footer
@@ -54,17 +54,25 @@ export default {
                         content: messageContent || welcomeMessage
                     });
                 } else {
+                    // ═════════════════ OLD/CLASSIC PREMIUM THEME EMBED ═════════════════
                     const embed = new EmbedBuilder()
-                        .setColor(welcomeConfig.welcomeEmbed?.color || getColor('success'))
+                        .setColor(welcomeConfig.welcomeEmbed?.color || getColor('success') || '#5865F2')
+                        .setAuthor({ 
+                            name: `${user.username} Just Joined!`, 
+                            iconURL: user.displayAvatarURL({ dynamic: true }) 
+                        })
                         .setTitle(embedTitle)
                         .setDescription(welcomeMessage)
-                        .setThumbnail(user.displayAvatarURL())
+                        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 256 }))
                         .addFields(
-                            { name: 'User', value: `${user.tag} (${user.id})`, inline: true },
-                            { name: 'Member Count', value: guild.memberCount.toString(), inline: true }
+                            { name: '✨ Member Count', value: `**#${guild.memberCount}**`, inline: true },
+                            { name: '📅 Created Account', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true }
                         )
                         .setTimestamp()
-                        .setFooter({ text: embedFooter });
+                        .setFooter({ 
+                            text: embedFooter, 
+                            iconURL: guild.iconURL({ dynamic: true }) || undefined 
+                        });
                     
                     if (welcomeConfig.welcomeImage) {
                         embed.setImage(welcomeConfig.welcomeImage);
