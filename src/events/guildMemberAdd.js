@@ -33,19 +33,11 @@ export default {
 
                 const formatData = { user, guild, member };
                 const welcomeMessage = formatWelcomeMessage(
-                    welcomeConfig.welcomeMessage || welcomeConfig.welcomeEmbed?.description || 'Welcome {user} to {server}!',
+                    welcomeConfig.welcomeMessage || 'Welcome to the community! We are thrilled to have you join our server.',
                     formatData
                 );
 
                 const messageContent = welcomeConfig.welcomePing ? user.toString() : null;
-
-                const embedTitle = formatWelcomeMessage(
-                    welcomeConfig.welcomeEmbed?.title || `👋 Welcome to ${guild.name}!`,
-                    formatData
-                );
-                const embedFooter = welcomeConfig.welcomeEmbed?.footer
-                    ? formatWelcomeMessage(welcomeConfig.welcomeEmbed.footer, formatData)
-                    : `Welcome to ${guild.name}!`;
 
                 const canEmbed = permissions.has(PermissionFlagsBits.EmbedLinks);
 
@@ -54,25 +46,28 @@ export default {
                         content: messageContent || welcomeMessage
                     });
                 } else {
-                    // ═════════════════ OLD/CLASSIC PREMIUM THEME EMBED ═════════════════
+                    // Auto-detect server channels for the layout fields
+                    const protocolChan = guild.channels.cache.find(c => c.name.toLowerCase().includes('protocol'));
+                    const generalChan = guild.channels.cache.find(c => c.name.toLowerCase().includes('general') || c.name.toLowerCase().includes('chat'));
+                    const arcadeChan = guild.channels.cache.find(c => c.name.toLowerCase().includes('arcade'));
+
+                    const protocolValue = protocolChan ? `<#${protocolChan.id}>` : '`#protocol`';
+                    const generalValue = generalChan ? `<#${generalChan.id}>` : '`#general-chat`';
+                    const arcadeValue = arcadeChan ? `<#${arcadeChan.id}>` : '`#arcade`';
+
+                    // ═════════════════ EXACT IMAGE_BDFD9B.PNG THEME ═════════════════
                     const embed = new EmbedBuilder()
-                        .setColor(welcomeConfig.welcomeEmbed?.color || getColor('success') || '#5865F2')
-                        .setAuthor({ 
-                            name: `${user.username} Just Joined!`, 
-                            iconURL: user.displayAvatarURL({ dynamic: true }) 
-                        })
-                        .setTitle(embedTitle)
+                        .setColor('#5865F2') // Beautiful Discord Blue Color
+                        .setTitle(`🪐 WELCOME TO ${guild.name.toUpperCase()}`)
                         .setDescription(welcomeMessage)
                         .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 256 }))
                         .addFields(
-                            { name: '✨ Member Count', value: `**#${guild.memberCount}**`, inline: true },
-                            { name: '📅 Created Account', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true }
+                            { name: '📜 Read Protocols', value: protocolValue, inline: true },
+                            { name: '💬 Main Chit-Chat', value: generalValue, inline: true },
+                            { name: '🕹️ Arcade Zone', value: arcadeValue, inline: true }
                         )
                         .setTimestamp()
-                        .setFooter({ 
-                            text: embedFooter, 
-                            iconURL: guild.iconURL({ dynamic: true }) || undefined 
-                        });
+                        .setFooter({ text: `Member #${guild.memberCount} • Let's gooo! 🚀` });
                     
                     if (welcomeConfig.welcomeImage) {
                         embed.setImage(welcomeConfig.welcomeImage);
