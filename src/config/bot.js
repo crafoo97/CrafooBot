@@ -23,7 +23,7 @@ export const botConfig = {
     // 5 = Competing
     activities: [
       {
-        // Text users will see (example: "Playing /help | Titan Bot").
+        // Text users will see.
         name: "Made By Mr.Crafoo",
         // Activity type number (0 = Playing).
         type: 0,
@@ -68,7 +68,7 @@ export const botConfig = {
     statusColors: {
       pending: "#FFA500",
       approved: "#00FF00",
-      denied: "#FF0000",
+      disabled: "#FF0000",
     },
 
     // How long users must wait before submitting another application (hours).
@@ -139,7 +139,7 @@ export const botConfig = {
     },
     footer: {
       // Default footer text used in bot embeds.
-      text: "Titan Bot",
+      text: "Crafoo Bot",
       // Footer icon URL (null = no icon).
       icon: null,
     },
@@ -194,10 +194,7 @@ export const botConfig = {
   // =========================
   // SHOP SETTINGS
   // =========================
-  // Add shop defaults here when needed.
-  shop: {
-
-  },
+  shop: {},
 
   // =========================
   // TICKET SYSTEM
@@ -513,10 +510,8 @@ if (configErrors.length > 0) {
 export const BotConfig = botConfig;
 
 export function getColor(path, fallback = "#99AAB5") {
-  
   if (typeof path === "number") return path;
   if (typeof path === "string" && path.startsWith("#")) {
-    
     return parseInt(path.replace("#", ""), 16);
   }
   const result = path
